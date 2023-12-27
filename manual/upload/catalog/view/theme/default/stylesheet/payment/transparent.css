@@ -1,0 +1,7 @@
+.global-payment-form {
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+    margin-bottom: 30px;
+    max-width: 1000px;
+}

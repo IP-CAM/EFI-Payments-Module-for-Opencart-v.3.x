@@ -1,0 +1,25 @@
+{{ header }}{{ column_left }}
+
+{% if erro  is not empty %}
+	<div class="cardMsg">
+		<h1 class="failure">Falha!</h1>
+		<p class="failure">Erro: {{ erro }}</p>
+		<a href="{{ system_url }}?route=account/order" class="button">Voltar para os pedidos</a>
+	</div>
+{% endif %}
+{% if erro is empty %}
+	<div class="payment-success">
+		<img src="catalog/view/theme/default/image/payment/efi.png"/>
+		<h1>Pagamento Em Processamento!</h1>
+		<p>Olá! O seu pagamento está sendo processado. Por favor, aguarde alguns segundos enquanto realizamos o processamento.</p>
+		<div class="spinner"></div>
+	</div>
+
+	<script>
+		let identificadorPagamento = "{{identificadorPagamento}}";
+	</script>
+	<script src="catalog/view/javascript/payment/open-finance/validationPaymentOpenFinance.js"></script>
+{% endif %}
+
+
+{{ footer }}

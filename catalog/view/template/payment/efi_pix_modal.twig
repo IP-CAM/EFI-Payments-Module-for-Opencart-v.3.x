@@ -1,0 +1,141 @@
+{% if success %}
+<div id="pix-payment-modal" class="modal fade" tabindex="-1" aria-labelledby="pixModalLabel">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content p-4">
+            <div class="modal-header border-0">
+                <h4 class="modal-title w-100 text-center">Pagamento via Pix</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-6 col-md-4 text-center">
+                            <img src="extension/efi/catalog/view/image/efi_logo.png" class="img-fluid" alt="Logo Efí">
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-8">
+                            <div id="img-qr-code" class="border p-3 rounded text-center">
+                                <img src="{{ pix_url }}" class="img-fluid mx-auto d-block" alt="QR Code Pix">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-12 col-md-8 text-center">
+                            <p class="text-muted">Escaneie o QR Code ou copie o código Pix abaixo:</p>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control text-center" id="pix-key" value="{{ qrcode }}" readonly>
+                                <button class="btn btn-primary" id="copyPixKey">Copiar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-12 col-md-8 text-center">
+                            <p class="text-danger fw-bold" id="pix-timer">Expira em: --:--</p>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <div id="div-confirm-payment-pix" class="col-12 col-md-8 rounded d-flex align-items-center gap-1 justify-content-center border p-2 text-center text-white" style="background-color:#F37021;">
+                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                            <span id="txt-status-payment" class="fs-5">Aguardando pagamento...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+setTimeout(() => {
+    document.querySelectorAll('#efi-pix-form input, #efi-pix-form label').forEach(el => el.style.display = 'none');
+
+    const confirmBtn = document.getElementById('button-confirm');
+    if (confirmBtn) {
+        const openModalBtn = confirmBtn.cloneNode(true);
+        openModalBtn.innerHTML = '<i class="fa-brands fa-pix me-1"></i>Visualizar QR Code';
+        openModalBtn.removeAttribute('disabled');
+        openModalBtn.addEventListener('click', e => {
+            e.preventDefault();
+            const modal = new bootstrap.Modal(document.getElementById('pix-payment-modal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            modal.show();
+        });
+        confirmBtn.replaceWith(openModalBtn);
+    }
+
+    const copyBtn = document.getElementById('copyPixKey');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+            const input = document.getElementById('pix-key');
+            navigator.clipboard.writeText(input.value).then(() => {
+                this.textContent = 'Copiado!';
+                setTimeout(() => { this.textContent = 'Copiar'; }, 2000);
+            }).catch(console.error);
+        });
+    }
+
+    let expirationTime = {{ expiration_time }};
+    const timerEl = document.getElementById('pix-timer');
+    const formatTime = (t) => {
+        const h = Math.floor(t / 3600);
+        const m = Math.floor((t % 3600) / 60);
+        const s = t % 60;
+        return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
+
+    if (timerEl) {
+        const timerId = setInterval(() => {
+            if (expirationTime <= 0) {
+                clearInterval(timerId);
+                timerEl.textContent = 'Expirado!';
+            } else {
+                timerEl.textContent = `Expira em: ${formatTime(expirationTime)}`;
+                expirationTime--;
+            }
+        }, 1000);
+    }
+
+    async function verifyPixStatus() {
+        try {
+            const url = '{{ ajax_verify_payment_controller_url|raw }}';
+            const response = await fetch(url);
+            const status = await response.json();
+
+            if (status.status === 'CONCLUIDA') {
+                const pixBox = document.getElementById('div-confirm-payment-pix');
+                const qrCode = document.getElementById('img-qr-code');
+                const statusText = document.getElementById('txt-status-payment');
+                const spinner = document.querySelector('.spinner-grow');
+
+                statusText.textContent = 'Pagamento Confirmado';
+                pixBox.style.backgroundColor = '';
+                pixBox.classList.add('bg-success');
+                qrCode.classList.add('opacity-50', 'pe-none');
+                spinner.classList.add('d-none');
+
+                setTimeout(() => {
+                    window.location.href = status.redirect;
+                }, 2000);
+            }
+        } catch (err) {
+            console.error('Erro ao consultar status do Pix:', err);
+        }
+    }
+
+    setInterval(verifyPixStatus, 5000);
+}, 500);
+</script>
+{% endif %}

@@ -1,0 +1,8 @@
+{
+    "name": "Efi",
+    "description": "Plugin Efí para pagamentos via Boleto, Cartão de Crédito, Pix e Open Fiance.",
+    "version": "1.0",
+    "author": "Efi",
+    "type": "payment",
+    "link": "https://sejaefi.com.br"
+}

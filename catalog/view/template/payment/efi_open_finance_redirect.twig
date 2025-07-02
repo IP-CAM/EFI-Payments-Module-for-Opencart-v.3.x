@@ -1,0 +1,71 @@
+{{ header }}
+
+<div class="container text-center mt-5">
+  {% if erro %}
+    <div class="alert alert-danger" role="alert">
+      {{ erro }}
+    </div>
+  {% else %}
+
+    <div class="row justify-content-center">
+      <img src="{{ logo }}" class="img-fluid col-lg-3 col-md-5 col-7" alt="Logo da empresa">
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-auto d-flex flex-column align-items-center gap-3">
+        <div class="spinner-border" role="status" style="color: #F37021">
+          <span class="visually-hidden">Aguardando confirmação...</span>
+        </div>
+        <strong class="fs-5">{{ mensagem }}</strong>
+      </div>
+    </div>
+
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    {% if not erro %}
+    const identificadorPagamento = '{{ identificadorPagamento }}';
+    const verificaStatusUrl = '{{ verificaStatusUrl }}';
+
+    function verificarStatusPagamento() {
+      fetch(`${verificaStatusUrl}&identificadorPagamento=${encodeURIComponent(identificadorPagamento)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.status === 'aceito') {
+            window.location.href = 'index.php?route=checkout/success&language={{ config_language }}';
+          } else if (data && data.status === 'erro') {
+            const container = document.querySelector('.container');
+            container.innerHTML = `<div class="alert alert-danger" role="alert">${data.mensagem}</div>`;
+          } else {
+            setTimeout(verificarStatusPagamento, 3000);
+          }
+        })
+        .catch(err => {
+          console.error('Erro ao consultar status:', err);
+          setTimeout(verificarStatusPagamento, 5000);
+        });
+    }
+
+    verificarStatusPagamento();
+    {% endif %}
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.innerWidth <= 768) { // Aplica apenas em telas pequenas (ex: mobile)
+      const header = document.querySelector('header');
+      const footer = document.querySelector('footer');
+      const main = document.querySelector('main');
+
+      const headerHeight = header?.offsetHeight || 0;
+      const footerHeight = footer?.offsetHeight || 0;
+
+      main.style.marginBottom = `${footerHeight + (headerHeight / 4)}px`;
+    }
+  });
+</script>
+
+{{ footer }}

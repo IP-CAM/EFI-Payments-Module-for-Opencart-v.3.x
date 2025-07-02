@@ -1,0 +1,10 @@
+{
+    "name": "efi/opencart-payment",
+    "description": "Plugin de pagamento Efi para OpenCart",
+    "type": "library",
+    "require": {
+        "efipay/sdk-php-apis-efi": "^1"
+    },
+    "minimum-stability": "stable",
+    "license": "MIT"
+}

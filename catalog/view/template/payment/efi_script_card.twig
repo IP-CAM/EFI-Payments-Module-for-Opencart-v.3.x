@@ -1,0 +1,13 @@
+
+	const config = {
+                    accountCode : '{{ account_coude }}',
+                    environment : '{{ envoriment }}',
+                    cardNumberInputId : 'payment_efi_customer_card_number',
+                    cardCvvInputId : 'payment_efi_customer_card_cvv',
+                    cardExpirationInputId : 'payment_efi_customer_card_expire',
+                    customerNameInputId : 'payment_efi_customer_name',
+                    customerDocumentInputId : 'payment_efi_customer_document',
+                    total : '{{ total }}',
+                    installmentsSelectId : 'payment_efi_customer_card_installments',
+                };
+    new  CardFormHandler(config);

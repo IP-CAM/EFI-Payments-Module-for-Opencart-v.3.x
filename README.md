@@ -1,113 +1,105 @@
-# Módulo de Integração Efí  para OpenCart Brasil #
+# Plugin de Pagamento Efí para OpenCart 4
 
-:warning: **Este módulo é compatível apenas com as versões do OpenCart 3.0.3.3 (Brasil 1.5.0) ou superior.**:warning:
+Este plugin oficial do **Efí**, permite oferecer múltiplas formas de pagamento em sua loja OpenCart: **Pix**, **Boleto Bancário**, **Cartão de Crédito** e **Open Finance**.
 
-**Em caso de dúvidas, você pode verificar a [Documentação](https://dev.gerencianet.com.br/docs/opencart) da API na Efí e, necessitando de mais detalhes ou informações, entre em contato conosco, via nossos [Canais de Comunicação](https://sejaefi.com.br/central-de-ajuda).**
+> ℹ️ Todos os campos obrigatórios devem ser preenchidos corretamente para que o plugin funcione.  
+> 📘 Veja como obter suas credenciais e certificados na [documentação oficial do Efí](https://dev.efipay.com.br/docs).
 
-## Requisitos
+---
 
-#### Testado nas seguintes versões do PHP:
-``` 
-    PHP  7.2, 7.3 e 7.4 
-```
+## 🚀 Instalação do Plugin
 
-#### Dependências
-Instalação de dependências que podem estar faltando (substitua o x pelo número da versão do seu PHP): 
-```
-    sudo apt-get install php7.x-dom
-    sudo apt-get install php7.x-curl
-    sudo apt-get install php7.x-gd
-    sudo apt-get install php7.x-xml
-    sudo apt-get install php7.x-zip
-```
+1. Acesse o painel administrativo do OpenCart.
+2. Vá até o menu `Extensões > Instalador de Extensões`.
+3. Clique em **Enviar** e selecione o arquivo [`efi.ocmod.zip`](./upload/efi.ocmod.zip) localizado na pasta `upload` deste repositório.
+4. Após o upload, vá para `Extensões > Extensões`, escolha `Pagamentos` no seletor.
+5. Procure por **Efí Bank** e clique em **Instalar**.
+6. Após instalar, clique em **Editar** para configurar as credenciais, certificados e demais campos obrigatórios.
 
-- OpenCart necessita do <code>curl</code> ativado
-- É necessário que o <code>Real Brasileiro</code> esteja configurado como moeda padrão no Opencart.
+> 📌 **Importante**: após configurar o plugin, vá até `Extensões > Modificações` e clique em **Atualizar** (ícone de recarregar) para aplicar as alterações.
 
-## Instalação
-### Automática
+---
 
-1. Faça o download do arquivo [efi.ocmod.zip](auto/).
+## ⚙️ Configurações Gerais
 
-2. Acesse o menu `Extensions > Extension Installer` (`Extensões > Instalador`), clique no botão **Upload**, selecione o arquivo 'efi.ocmod.zip' (citado na primeira instrução) e aguarde a conclusão da instalação automática.
+| Campo                              | Descrição |
+|------------------------------------|-----------|
+| **Client_Id e Client_Secret (produção ou desenvolvimento)**             | [🔗 Saiba como obter](https://dev.efipay.com.br/docs/api-cobrancas/credenciais#criar-uma-aplica%C3%A7%C3%A3o-ou-configurar-uma-j%C3%A1-existente) |
+| **Identificador da conta**         | Código único da conta no Efí. Para localizá-lo, acesse: `Menu API > Aplicações > Introdução > Identificador da conta`. |
+| **Ordem de Exibição**              | Ordem em que a forma de pagamento será listada no checkout. |
+| **Status do pedido ao finalizar o pagamento** | Define o status que será atribuído ao pedido após pagamento. |
+| **Ativar ambiente de teste**       | Habilita o modo sandbox para testes. |
+| **Ativar Plugin**                  | Liga ou desliga o uso do plugin. |
 
-:warning: Caso você já tenha instalado o módulo da Efí anteriormente, o OpenCart poderá informar que alguns arquivos serão sobrescritos. Não se preocupe, pois a instalação não afetará qualquer arquivo que não seja do módulo da Gerencianet já existente em sua loja. :warning:
+---
 
-:warning: Atenção: Devido ao tamanho do arquivo de instalação do módulo, talvez seja necessário alterar o parâmetro `php_max_upload` do `php.ini` para no mínimo 10mb. :warning:
+## 💸 Configuração do Pix
 
+| Campo                    | Descrição |
+|--------------------------|-----------|
+| **Chave Pix**            | Chave cadastrada no aplicativo do Efí. |
+| **Tempo de expiração da cobrança** | Tempo em horas que a cobrança ficará disponível. |
+| **Certificado**          | Arquivo `.p12` gerado via painel do Efí. [Ver instruções](https://dev.efipay.com.br/docs/api-pix/credenciais#gerando-um-certificado-p12) |
+| **Desconto**             | Valor fixo ou percentual. `10` = R$10, `5%` = percentual. |
+| **Validar mTLS**         | Veja [aqui](https://dev.efipay.com.br/docs/api-pix/webhooks#entendendo-o-padr%C3%A3o-mtls) se sua conta exige esse padrão. |
+| **Ativar**               | Ativa o pagamento por Pix. |
 
-### Manual
+---
 
-1. Faça o download dos [arquivos da última versão do módulo](manual/).
-2. Descompacte os arquivo baixado e realize o upload das pastas **admin**, **catalog** e **lib** para dentro do diretório principal do OpenCart.
+## 🧾 Configuração do Boleto
 
-:warning: Caso você já tenha instalado o módulo da Efí anteriormente, o OpenCart poderá informar que alguns arquivos serão sobrescritos. Não se preocupe, pois a instalação não afetará qualquer arquivo que não seja do módulo da Gerencianet já existente em sua loja. :warning:
+| Campo                    | Descrição |
+|--------------------------|-----------|
+| **Dias para vencimento do boleto** | Número de dias após emissão para o vencimento. |
+| **Desconto**             | Valor fixo ou percentual. `10` = R$10, `5%` = percentual. |
+| **Enviar e-mail para o cliente final** | Se ativo, o boleto será enviado por e-mail. |
+| **Configuração de multa** | Valor da multa após vencimento. Ex: `200` = 2%. |
+| **Configuração de juros** | Valor de juros por dia. Ex: `33` = 0,033% ao dia. |
+| **Mensagem no boleto**   | Texto opcional que aparecerá impresso. |
+| **Ativar**               | Ativa o pagamento por boleto bancário. |
 
+---
 
-## Configuração
+## 💳 Cartão de Crédito
 
-Acesse `Extensions >  Modifications` (`Extensões > Modificações`), selecione o módulo `Efi` e clique no botão `Refresh` (`Atualizar`) no canto superior direito da página.
+| Campo       | Descrição |
+|-------------|-----------|
+| **Ativar**  | Ativa o pagamento por cartão de crédito. |
 
-Ao acessar `Extensions >  Extensions` (`Extensões > Extensões`), você deverá selecionar o tipo de extensão que deseja. Escolha `Payments` (`Pagamentos`). Você já visualizará o módulo da Efí disponível na lista. Clique em `install` (`instalar`) para instalar o módulo e depois em `edit` (`editar`) para iniciar a configuração.
+---
 
-Cinco abas estarão disponíveis para realizar a configuração do módulo:
+## 🔐 Open Finance
 
-* Geral
-* PIX
-* Boleto
-* Open Finance
-* Cartão de Crédito
-* Status do Pedido
+| Campo                             | Descrição |
+|-----------------------------------|-----------|
+| **Chave Pix para recebimento**    | Chave que receberá os pagamentos via Open Finance. |
+| **Desconto**                      | Valor fixo ou percentual. `10` = R$10, `5%` = percentual. |
+| **Certificado**                   | Arquivo `.p12` gerado via painel do Efí. [Ver instruções](https://dev.efipay.com.br/docs/api-pix/credenciais#gerando-um-certificado-p12) |
+| **Ativar**                        | Habilita a opção de Open Finance. |
 
-### Configurações Gerais
+---
 
-Nesta aba é necessário informar:
-* As **credenciais de Produção e Desenvolvimento** da sua aplicação (obtidas na sua conta Gerencianet)
-* O **identificador da conta** (obtido na sua conta Gerencianet)
-* **Habilita o checkout em um passo**: Determina se o  checkout do plugin  irá aparecer junto com o formulário de finalização do pedido ou se irá abrir uma nova página para finalização do pagamento.
-* **Habilitar modo sandbox**: Determina se o módulo está em modo de testes. No modo de teste você pode gerar cobranças fictícias para testar o fluxo.
-* **Ativo**: Determina se o módulo de pagamentos da Gerencianet está Ativo ou Inativo.
+## 📄 Changelog
 
-### PIX
+Veja todas as mudanças no [CHANGELOG.md](CHANGELOG.md)
 
-Nesta aba, as seguintes propriedades podem ser configuradas:
+---
 
-* **Chave PIX**: Determina a qual chave PIX o pagamento será enviado
-* **Caminho do certificado**: Deve ser informado o caminho onde se encontra o seu certificado de segurança `.pem`
-* **Desconto no Pagamento**: Você pode fornecer desconto para clientes que pagam por meio do PIX.
-* **Tempo de Vencimento (horas)**: Determina o tempo de validade do QrCode Gerado
-* **Validar mTLS**: Habilita ou desabilita a verificação de segurança utilizando mTLS. Mais informações você encontra [AQUI](https://dev.gerencianet.com.br/docs/api-pix#section-webhook)
+## ✅ Requisitos
 
-### Boleto
+- OpenCart `4.1.0.1`
+- PHP `8.1` 
+- Conta ativa no [Efí](https://efipay.com.br)
+- Certificados e chaves de API (conforme documentação)
 
-Nesta aba, as seguintes propriedades podem ser configuradas:
+---
 
-* **Dias Para Vencimento**: Determina a quantidade de dias  para o vencimento do boleto, a contar da data de sua geração.
-* **Desconto no pagamento**: Determina a quantidade de desconto que será aplicado no boleto,  em porcentagem.
-* **Defina o percentual de multa**: Configuração de multa para ser aplicada automaticamente  no caso de pagamento após o vencimento do boleto.
-* **Defina o percentual de juros**: Configuração de jutos para ser aplicado automaticamente  no caso de pagamento após o vencimento do boleto.
-* **Observação**: Permite incluir uma mensagem no boleto para o cliente final.
-* **E-mail de cobrança**: Caso selecionado, serão enviados e-mails sobre as transações para o cliente final.
-* **Ativar boleto**: Caso selecionado,   ativará a opção boleto como forma de pagamento.
+## 📄 Licença
 
-### Open Finance
+Distribuído sob a licença MIT. Veja mais em [LICENSE](LICENSE).
 
-Nesta aba, as seguintes propriedades podem ser configuradas:
+---
 
-* **Nome**: Nome do titular da conta.
-* **Documento**: Deve ser informado o documento (CPF ou CNPJ) do titular da conta.
-* **Agência**: Deve ser informado a agência do titular.
-* **Conta**: Deve ser informado o número referente a conta.
-* **Tipo de conta**: Deve ser informado o tipo de conta referente ao titular.
-* **Desconto no pagamento**: Determina a quantidade de desconto que será aplicado no boleto,  em porcentagem.
-* **Ativar Open Finance**: Caso selecionado,   ativará a opção Open Finance como forma de pagamento.
+## 🛠 Suporte
 
-### Cartão de Crédito
-
-Nesta aba, as seguintes propriedades podem ser configuradas:
-
-* **Ativar Cartão de Crédito**: Caso selecionado,   ativará a opção cartão de crédito  como forma de pagamento.
-
-### Status do Pedido
-
-Nesta aba é realizada a configuração dos Status de pagamento da Gerencianet com os Status de pagamento de sua loja. Assim, quando houver a alteração do status do pagamento na Gerencianet,  o status do pedido em sua loja será atualizado automaticamente de acordo com as configurações definidas.
+Para dúvidas, abra uma _issue_ aqui no GitHub ou consulte a [documentação do Efí](https://dev.efipay.com.br/docs).

@@ -1,0 +1,132 @@
+{% for style in styles %}
+	<script>
+		if (!document.querySelector('link[href="{{ style.href }}"]')) {
+			let link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = "{{ style.href }}";
+			document.head.appendChild(link);
+		}
+	</script>
+{% endfor %}
+
+<form class="container p-3 border border-1" id="{{ efi_payment_id_form }}">
+	<div class="row justify-content-center">
+		<img src="{{ img_logo_url }}" class="img-fluid col-lg-3 col-md-5 col-7" alt="...">
+	</div>
+
+	<div class="row text-center mb-4">
+		<strong class="fs-5">{{ efi_payment_description }}</strong>
+	</div>
+
+	{% if value_desconto != 'R$ 0,00' %}
+		<div class="row justify-content-center my-3">
+			<div class="col-12">
+				<div class="alert alert-warning py-2 px-3 d-flex align-items-center justify-content-center gap-2 small mb-3" role="alert">
+					<i class="bi bi-exclamation-triangle-fill"></i>
+					<span>O desconto não se aplica ao valor do frete.</span>
+				</div>
+
+				<table class="table table-hover mb-0">
+					<tbody>
+						<tr>
+							<td class="fw-bold">Total</td>
+							<td class="text-end">{{ total }}</td>
+						</tr>
+						<tr>
+							<td class="fw-bold">{{ msg_desconto }}</td>
+							<td class="text-end text-success">-{{ value_desconto }}</td>
+						</tr>
+						<tr>
+							<td class="fw-bold">Total com desconto</td>
+							<td class="text-end fw-bold">{{ total_value_with_discount }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	{% endif %}
+
+	<div class="row justify-content-between">
+		{% for input in inputs %}
+			<div class="mb-3 col-12 col-lg-6">
+				<label for="{{ input.name }}" class="form-label fw-bold">{{ input.label }}</label>
+
+				{% if input.type == 'select' %}
+					<select name="{{ input.name }}" id="{{ input.name }}" class="form-select" {% if input.required %}required{% endif %}>
+						{% for option in input.options %}
+							<option value="{{ option.value }}" {% if option.value == input.value %}selected{% endif %}>
+								{{ option.label }}
+							</option>
+						{% endfor %}
+					</select>
+				{% else %}
+					<input
+						type="{{ input.type }}"
+						name="{{ input.name }}"
+						id="{{ input.name }}"
+						class="form-control"
+						{% if input.required %}required{% endif %}
+						{% if input['data-mask'] %}data-mask="{{ input['data-mask'] }}"{% endif %}
+						{% if input.value %}value="{{ input.value }}"{% endif %}
+					>
+				{% endif %}
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="row justify-content-end">
+		<div class="col">
+			<div class="row justify-content-end">
+				<div class="col">
+					<button type="button" id="button-confirm" class="btn text-white w-100">
+						<span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+						<span id="txt-">{{ btn_confirm_icon }}{{ btn_confirm_text }}</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<script>
+	if (typeof efiLanguage === 'undefined') {
+		const efiLanguage = "{{ language }}";
+	}
+
+	function loadEfiScripts(scriptList) {
+		let index = 0;
+
+		function loadNext() {
+			if (index < scriptList.length) {
+				const baseHref = scriptList[index].href;
+
+				if (!document.querySelector(`script[src="${baseHref}"]`)) {
+					const script = document.createElement("script");
+					script.src = baseHref;
+					script.type = "text/javascript";
+					script.defer = true;
+
+					script.onload = () => {
+						index++;
+						loadNext();
+					};
+
+					document.body.appendChild(script);
+				} else {
+					index++;
+					loadNext();
+				}
+			} else {
+				{{ command_init_form_payment|raw }}
+			}
+		}
+
+		loadNext();
+	}
+
+	loadEfiScripts([
+		{% for script in scripts %}
+			{ href: "{{ script.href }}" },
+		{% endfor %}
+	]);
+</script>

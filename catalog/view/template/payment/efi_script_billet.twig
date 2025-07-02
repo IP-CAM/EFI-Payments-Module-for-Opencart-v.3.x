@@ -1,0 +1,21 @@
+<script>
+    const formBillet = document.getElementById('efi-billet-form');
+
+    // Esconde inputs, labels e botões antigos
+    formBillet.querySelectorAll('input, label, button').forEach(el => {
+        el.style.display = 'none';
+    });
+
+    // Cria novo link para abrir o boleto
+    const linkOpenBillet = document.createElement('a');
+    linkOpenBillet.href = '{{ link_download_billet }}';
+    linkOpenBillet.target = '_blank';
+    linkOpenBillet.classList.add('btn', 'text-white', 'w-100');
+    linkOpenBillet.style.backgroundColor = '#F37021';
+
+    // Adiciona o ícone + texto ao link
+    linkOpenBillet.innerHTML = '<i class="fa-solid fa-barcode me-2"></i>Visualizar Boleto';
+
+    // Adiciona o link ao final do formulário
+    formBillet.appendChild(linkOpenBillet);
+</script>

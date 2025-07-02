@@ -1,0 +1,122 @@
+{{ header }}
+{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="float-end">
+				<button type="submit" form="form-payment" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">
+					<i class="fa-solid fa-save"></i>
+				</button>
+				<a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light">
+					<i class="fa-solid fa-reply"></i>
+				</a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ol class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li class="breadcrumb-item">
+						<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+					</li>
+				{% endfor %}
+			</ol>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="card">
+			<div class="card-header">
+				<i class="fa-solid fa-pencil"></i>
+				{{ text_edit }}
+			</div>
+			<div class="card-body">
+				<form
+					id="form-payment" action="{{ save }}" method="post" data-oc-toggle="ajax">
+					<!-- Nav Pills -->
+					<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+						{% for option in options %}
+							<li class="nav-item" role="presentation">
+								<button class="nav-link {% if loop.first %}active{% endif %}" id="pills-{{ option.name | lower | replace({' ': '-'}) }}-tab" data-bs-toggle="pill" data-bs-target="#pills-{{ option.name | lower | replace({' ': '-'}) }}" type="button" role="tab" aria-controls="pills-{{ option.name | lower | replace({' ': '-'}) }}" aria-selected="{{ loop.first ? 'true' : 'false' }}">
+									<i class="{{ option.icon }}"></i>
+									{{ option.name }}
+								</button>
+							</li>
+						{% endfor %}
+					</ul>
+					<!-- Tab Content -->
+					<div class="tab-content" id="pills-tabContent">
+						{% for option in options %}
+							<div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="pills-{{ option.name | lower | replace({' ': '-'}) }}" role="tabpanel" aria-labelledby="pills-{{ option.name | lower | replace({' ': '-'}) }}-tab">
+								{% for input in option.inputs %}
+									<div class="row mb-3">
+										<label for="input-{{ input.name }}" class="col-sm-2 col-form-label">
+											{{ input.label }}
+											{% if input.required %}
+												<span class="text-danger">*</span>
+											{% endif %}
+											{% if input.tooltip %}
+												<span data-bs-toggle="tooltip" title="{{ input.tooltip }}" class="ms-1 text-info" style="cursor: help;">
+													<i class="fa-solid fa-circle-question"></i>
+												</span>
+											{% endif %}
+										</label>
+										<div class="col-sm-10">
+											{% if input.type == 'text' %}
+												<input type="text" name="{{ input.name }}" id="input-{{ input.name }}" class="form-control" value="{{ input.value }}">
+											{% elseif input.type == 'checkbox' %}
+												<input type="hidden" name="{{ input.name }}" value="0">
+												<div class="form-check form-switch form-switch-lg">
+													<input type="checkbox" name="{{ input.name }}" value="1" id="input-{{ input.name }}" class="form-check-input" {% if input.value == '1' %} checked {% endif %}>
+												</div>
+											{% elseif input.type == 'number' %}
+												<input type="number" name="{{ input.name }}" id="input-{{ input.name }}" class="form-control" value="{{ input.value }}">
+											{% elseif input.type == 'file' %}
+												<div class="d-flex align-items-center">
+													{% if input.value %}
+														<button type="button" class="btn btn-primary me-3" data-oc-target="#input-{{ input.name }}" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="2048" data-oc-size-error="Arquivo muito grande!">
+															Selecionar Novo Certificado
+														</button>
+														<p class="form-text">Arquivo enviado:
+															{{ input.value }}</p>
+													{% else %}
+														<button type="button" class="btn btn-primary" data-oc-target="#input-{{ input.name }}" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="2048" data-oc-size-error="Arquivo muito grande!">
+															Selecionar Certificado
+														</button>
+													{% endif %}
+													<input type="hidden" name="{{ input.name }}" id="input-{{ input.name }}" value="{{ input.value }}">
+												</div>
+											{% elseif input.type == 'select' %}
+												<select name="{{ input.name }}" id="input-{{ input.name }}" class="form-select">
+													{% for option_value in input.options %}
+														<option value="{{ option_value.value }}" {% if option_value.value == input.value %} selected {% endif %}>
+															{{ option_value.label }}
+														</option>
+													{% endfor %}
+												</select>
+											{% endif %}
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						{% endfor %}
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-3">
+				<img src="{{ payment_efi_image_logo }}" class="img-fluid" alt="">
+			
+			</div>
+
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-3">
+				<p class="text-center fs-5 ">Efí Pagamentos - Módulo Oficial v2.0.0</p>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+{{ footer }}

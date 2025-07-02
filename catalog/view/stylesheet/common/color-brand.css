@@ -1,0 +1,16 @@
+:root {
+    --brand-color: #F37021;
+}
+
+#button-confirm {
+    background-color: var(--brand-color);
+}
+
+label.required:before,
+label:has(+ input:required):before,
+label:has(+ select:required):before,
+label:has(+ textarea:required):before {
+    content: '* ';
+    color: red;
+    font-weight: bold;
+}

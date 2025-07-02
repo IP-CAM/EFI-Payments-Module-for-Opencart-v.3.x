@@ -1,0 +1,74 @@
+{{ header }}
+<div class="container ">
+	<div class="row justify-content-center">
+		<div class="col">
+			<div class="card p-0 shadow " style="border-color: #F37021; ">
+				<div class="card-header    d-flex justify-content-center align-items-center" style="background-color: #F37021; ">
+					<h3 class="mb-0 text-white ">
+						<i class="fa-solid fa-qrcode me-2"></i>Pagamento via Pix
+					</h3>
+				</div>
+				<div class="card-body text-center">
+					<h4 class="mb-3">Escaneie o QR Code abaixo com seu app bancário ou copie o código Pix.</h4>
+
+					<div class="mb-2  text-center d-flex justify-content-center">
+						<div class="mb-4 border p-3 ">
+							<img src="{{ pix_url }}" alt="QR Code Pix" class="img-fluid" style="max-width: 280px;"/>
+						</div>
+					</div>
+
+
+					<div class="row justify-content-center">
+						<div class="col-md-8">
+							<div class="input-group mb-3">
+								<input type="text" class="form-control text-center" id="pix-code" value="{{ qrcode }}" readonly>
+								<button class="btn btn-outline-secondary" id="btn-copy" type="button" onclick="copyPixCode()">
+									<i class="fa-solid fa-copy"></i>
+									Copiar
+								</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function copyPixCode() {
+const input = document.getElementById('pix-code');
+const button = document.getElementById('btn-copy');
+
+input.select();
+input.setSelectionRange(0, 99999);
+
+navigator.clipboard.writeText(input.value).then(() => {
+button.innerHTML = 'Copiado';
+setTimeout(() => {
+button.innerHTML = '<i class="fa-solid fa-copy"></i> Copiar';
+}, 3000);
+}).catch(() => {
+button.innerHTML = 'Erro ao copiar';
+});
+}
+</script>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+if (window.innerWidth <= 768) { // Aplica apenas em telas pequenas (ex: mobile)
+const header = document.querySelector('header');
+const footer = document.querySelector('footer');
+const main = document.querySelector('main');
+
+const headerHeight = header ?. offsetHeight || 0;
+const footerHeight = footer ?. offsetHeight || 0;
+
+main.style.marginBottom = `${
+footerHeight + (headerHeight / 4)
+}px`;
+}
+});
+</script>
+
+{{ footer }}
